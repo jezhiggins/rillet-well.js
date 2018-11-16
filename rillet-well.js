@@ -8,9 +8,15 @@ class RilletWell {
     this.async_iter = async_iter
   } // constructor
 
-  async *[Symbol.asyncIterator]() {
+  async* [Symbol.asyncIterator]() {
     yield* this.async_iter;
   }
-} // RilletWell
+
+  async toArray(dest = []) {
+    for await (const v of this)
+      dest.push(v)
+    return dest
+  } // toArray
+} // class RilletWell
 
 module.exports = RilletWell
