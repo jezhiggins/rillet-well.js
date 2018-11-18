@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jezhiggins/rillet-well.js#readme",
   "devDependencies": {
+    "chai": "^4.2.0",
     "luxon": "^1.7.1",
     "mocha": "^3.4.2"
   }

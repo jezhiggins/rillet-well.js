@@ -1,4 +1,4 @@
-const assert = require('assert');
+const { expect } = require('chai');
 const { timer, pause } = require('./helpers');
 
 describe('test helpers', () => {
@@ -10,8 +10,8 @@ describe('test helpers', () => {
 
       const elapsed = t.elapsed() * 1000
 
-      assert(elapsed > i)
-      assert(elapsed < i+50)
+      expect(elapsed).to.be.above(i)
+      expect(elapsed).to.not.be.above(i+50)
     }
   })
 })

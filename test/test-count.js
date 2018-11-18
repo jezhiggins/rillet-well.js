@@ -11,7 +11,6 @@ async function* array_gn() {
 async function count(rw) {
   let c = 0;
   for await (const a of rw) {
-    console.log(a)
     ++c
   }
   return c

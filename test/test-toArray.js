@@ -1,5 +1,5 @@
 const source = require('../rillet-well').source;
-const assert = require('assert');
+const { expect } = require('chai')
 const { pause } = require('./helpers');
 
 const array = [1,2,3,4,5,6,7,8];
@@ -12,14 +12,15 @@ async function* array_gn() {
 describe('toArray', () => {
   it('await source(array) toArray', async () => {
     const c = await source(array_gn()).toArray()
-    assert.deepEqual(c, array)
+
+    expect(c).to.eql(array)
   })
 
   it('source(array) toArray(dest)', async () => {
     let c = await source(array_gn()).toArray()
     c = await source(array_gn()).toArray(c)
 
-    assert.deepEqual(c, [1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8])
+    expect(c).to.eql([1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8])
   })
 
   it('source(array).toArray', async () => {
@@ -28,7 +29,7 @@ describe('toArray', () => {
 
     await pause()
 
-    assert.deepEqual(gather, array)
+    expect(gather).to.eql(array)
   })
 
   //t('take(4).count', source(array).take(4).count(), 4);
