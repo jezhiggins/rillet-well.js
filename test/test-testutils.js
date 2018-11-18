@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { timer, pause } = require('./t');
+const { timer, pause } = require('./helpers');
 
 describe('test helpers', () => {
   it('timer and pause', async () => {

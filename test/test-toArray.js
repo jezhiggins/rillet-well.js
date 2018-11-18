@@ -1,6 +1,6 @@
-const source = require('../rillet-well.js').source;
+const source = require('../rillet-well').source;
 const assert = require('assert');
-const { pause } = require('./t');
+const { pause } = require('./helpers');
 
 const array = [1,2,3,4,5,6,7,8];
 
