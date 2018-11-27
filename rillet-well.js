@@ -40,8 +40,8 @@ async function* eventStream(evtSource, evtName) {
       p = new Promise(resolve => callback = resolve)
     } // while
   } finally {
+    evtSource.off(evtName, eventSink)
     callback = null
-    evtSource.off(evtName, callback)
   }
 } // eventer
 
@@ -65,6 +65,10 @@ class RilletWell {
 
   [Symbol.asyncIterator]() {
     return this.async_iter;
+  }
+
+  stop() {
+    this.async_iter.return();
   }
 
   async toArray(dest = []) {
