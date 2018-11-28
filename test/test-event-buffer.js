@@ -23,7 +23,7 @@ describe('EventBuffer', () => {
     expect(buffer.available).eql(false)
   })
 
-  it('populate then over-drain buffer by one- synchronous until empty then async', done => {
+  it('populate then over-drain buffer by one - synchronous until empty then async', done => {
     const buffer = new EventBuffer()
 
     // populate

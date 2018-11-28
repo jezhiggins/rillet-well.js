@@ -72,7 +72,6 @@ describe('fromEvents', () => {
   it ('fromEvents(s, n) toArray()', async () => {
     const eventer = new EventSource()
     const capturer = fromEvents(eventer, 'ping')
-    const gatherer = capturer.toArray()
 
     for (let i = 1; i != 5; ++i) {
       await pause()
@@ -80,22 +79,24 @@ describe('fromEvents', () => {
     }
 
     capturer.stop()
-    const gathered = await gatherer
+    const gathered = await capturer.toArray()
 
     expect(gathered).to.eql([1, 4, 9, 16])
   })
 
-  xit ('fromEvents(s, n)', async () => {
+  it ('fromEvents(s, n)', async () => {
     const eventer = new EventSource()
 
     const reactor = fromEvents(eventer, 'ping')
-
-    for (let i = 1; i != 5; ++i)
+    for (let i = 1; i !== 5; ++i)
       eventer.evt(i*i)
 
     const result = []
-    for await (const v of reactor)
+    for await (const v of reactor) {
       result.push(v)
+      if (result.length === 4)
+        break
+    }
 
     expect(result).to.eql([1, 4, 9, 16])
   })

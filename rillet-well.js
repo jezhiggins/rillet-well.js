@@ -26,25 +26,6 @@ function oneEvent(evtSource, evtName) {
   }
 } // oneEvent
 
-async function* eventStream(evtSource, evtName) {
-  let callback = null
-  let p = new Promise(resolve => callback = resolve)
-  const eventSink = v => callback(v)
-
-  try {
-    evtSource.on(evtName, eventSink)
-
-    while (true) {
-      yield p
-
-      p = new Promise(resolve => callback = resolve)
-    } // while
-  } finally {
-    evtSource.off(evtName, eventSink)
-    callback = null
-  }
-} // eventer
-
 ////////////////////
 class RilletWell {
   static source(async_iter) {
@@ -56,15 +37,15 @@ class RilletWell {
   } // fromEvent
 
   static fromEvents(evtSource, evtName) {
-    return new RilletWell(eventStream(evtSource, evtName));
+    return new RilletWell(new EventStream(evtSource, evtName));
   } // fromEvent
 
   constructor(async_iter) {
     this.async_iter = async_iter
   } // constructor
 
-  [Symbol.asyncIterator]() {
-    return this.async_iter;
+  async *[Symbol.asyncIterator]() {
+    yield* this.async_iter
   }
 
   stop() {
