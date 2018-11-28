@@ -99,4 +99,58 @@ describe('EventBuffer', () => {
 
     expect(buffer.available).eql(false)
   })
+
+  it('for-await when populated', async () => {
+    const buffer = new EventBuffer()
+
+    // populate
+    for (let i = 0; i != 5; ++i)
+      buffer.push(i)
+
+    // drain
+    let expected = 0
+    for await (const v of buffer) {
+      expect(v).eql(expected)
+      ++expected
+      if (expected === 5)
+        break
+    }
+  })
+
+  it('for-await when unpopulated', async () => {
+    const buffer = new EventBuffer()
+
+    // populate in the future
+    for (let i = 0; i != 5; ++i)
+      pause(500).then(() => buffer.push(i))
+
+    // drain
+    let expected = 0
+    for await (const v of buffer) {
+      expect(v).eql(expected)
+      ++expected
+      if (expected === 5)
+        break
+    }
+  })
+
+  it('for-await when populated to unpopulated', async () => {
+    const buffer = new EventBuffer()
+
+    // populate
+    for (let i = 0; i != 5; ++i)
+      buffer.push(i)
+    for (let i = 5; i != 10; ++i)
+      pause(1000).then(() => buffer.push(i))
+
+    // drain
+    let expected = 0
+    for await (const v of buffer) {
+      expect(v).eql(expected)
+      ++expected
+      if (expected === 10)
+        break
+    }
+  })
+
 })

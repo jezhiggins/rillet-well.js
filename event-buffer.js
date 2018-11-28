@@ -21,6 +21,11 @@ class EventBuffer {
 
     return new Promise(resolve => this.latches.push(resolve))
   } // pop
+
+  async *[Symbol.asyncIterator]() {
+    while(true)
+      yield this.shift()
+  }
 } // class EventBuffer
 
 module.exports = EventBuffer;
