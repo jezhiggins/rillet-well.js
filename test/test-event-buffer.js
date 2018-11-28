@@ -1,4 +1,4 @@
-const EventBuffer = require('../event-buffer');
+const EventBuffer = require('../lib/event-buffer');
 const { expect } = require('chai')
 const { pause } = require('./helpers');
 
@@ -9,13 +9,13 @@ describe('EventBuffer', () => {
     expect(buffer.available).eql(false)
 
     // populate
-    for (let i = 0; i != 5; ++i) {
+    for (let i = 0; i !== 5; ++i) {
       buffer.push(i)
       expect(buffer.available).eql(true)
     }
 
     // drain
-    for (let i = 0; i != 5; ++i) {
+    for (let i = 0; i !== 5; ++i) {
       expect(buffer.available).eql(true)
       expect(buffer.shift()).eql(i)
     }
@@ -27,11 +27,11 @@ describe('EventBuffer', () => {
     const buffer = new EventBuffer()
 
     // populate
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       buffer.push(i)
 
     // drain
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       expect(buffer.shift()).eql(i)
 
     expect(buffer.available).eql(false)
@@ -56,7 +56,7 @@ describe('EventBuffer', () => {
 
     // drain
     const over = []
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       over.push(buffer.shift())
 
     Promise.all(over)
@@ -66,7 +66,7 @@ describe('EventBuffer', () => {
       })
 
     // populate
-    for (let i = 0; i != 5; ++i) {
+    for (let i = 0; i !== 5; ++i) {
       buffer.push(i)
       expect(buffer.available).eql(false)
     }
@@ -78,23 +78,23 @@ describe('EventBuffer', () => {
     expect(buffer.available).eql(false)
 
     // populate
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       buffer.push(i)
 
     // drain
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       expect(buffer.shift()).eql(i)
     // overdrain
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       expect(buffer.shift().then).to.not.be.null
 
     // recover the overdrain, and continue to repopulate
-    for (let i = 0; i != 15; ++i)
+    for (let i = 0; i !== 15; ++i)
       buffer.push(i+10)
 
     expect(buffer.available).eql(true)
     // drain again
-    for (let i = 5; i != 15; ++i)
+    for (let i = 5; i !== 15; ++i)
       expect(buffer.shift()).eql(i+10)
 
     expect(buffer.available).eql(false)
@@ -104,7 +104,7 @@ describe('EventBuffer', () => {
     const buffer = new EventBuffer()
 
     // populate
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       buffer.push(i)
 
     // drain
@@ -121,7 +121,7 @@ describe('EventBuffer', () => {
     const buffer = new EventBuffer()
 
     // populate in the future
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       pause(500).then(() => buffer.push(i))
 
     // drain
@@ -138,9 +138,9 @@ describe('EventBuffer', () => {
     const buffer = new EventBuffer()
 
     // populate
-    for (let i = 0; i != 5; ++i)
+    for (let i = 0; i !== 5; ++i)
       buffer.push(i)
-    for (let i = 5; i != 10; ++i)
+    for (let i = 5; i !== 10; ++i)
       pause(1000).then(() => buffer.push(i))
 
     // drain
