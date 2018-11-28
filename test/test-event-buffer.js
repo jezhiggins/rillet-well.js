@@ -23,7 +23,7 @@ describe('EventBuffer', () => {
     expect(buffer.available).eql(false)
   })
 
-  it('populate then over-drain buffer - synchronous until empty then async', done => {
+  it('populate then over-drain buffer by one- synchronous until empty then async', done => {
     const buffer = new EventBuffer()
 
     // populate
@@ -49,5 +49,54 @@ describe('EventBuffer', () => {
     buffer.push('resolve')
     // promise now resolved, buffer still empty
     buffer.available = false
+  })
+
+  it('overdrain multiple times', done => {
+    const buffer = new EventBuffer()
+
+    // drain
+    const over = []
+    for (let i = 0; i != 5; ++i)
+      over.push(buffer.shift())
+
+    Promise.all(over)
+      .then(all => {
+        expect(all).eql([0,1,2,3,4])
+        done()
+      })
+
+    // populate
+    for (let i = 0; i != 5; ++i) {
+      buffer.push(i)
+      expect(buffer.available).eql(false)
+    }
+  })
+
+  it('revert to synchronous once overdrain promises are settled', () => {
+    const buffer = new EventBuffer()
+
+    expect(buffer.available).eql(false)
+
+    // populate
+    for (let i = 0; i != 5; ++i)
+      buffer.push(i)
+
+    // drain
+    for (let i = 0; i != 5; ++i)
+      expect(buffer.shift()).eql(i)
+    // overdrain
+    for (let i = 0; i != 5; ++i)
+      expect(buffer.shift().then).to.not.be.null
+
+    // recover the overdrain, and continue to repopulate
+    for (let i = 0; i != 15; ++i)
+      buffer.push(i+10)
+
+    expect(buffer.available).eql(true)
+    // drain again
+    for (let i = 5; i != 15; ++i)
+      expect(buffer.shift()).eql(i+10)
+
+    expect(buffer.available).eql(false)
   })
 })
