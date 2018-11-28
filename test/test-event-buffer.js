@@ -153,4 +153,46 @@ describe('EventBuffer', () => {
     }
   })
 
+  it('buffer halts when return() is called - when synchronous accept no more pushes', async () => {
+    const buffer = new EventBuffer()
+
+    // populate
+    for (let i = 0; i !== 5; ++i)
+      buffer.push(i)
+    buffer.return()
+    // these will be ignored
+    for (let i = 0; i !== 5; ++i)
+      buffer.push(i)
+
+    let expected = 0
+    for await (const v of buffer) {
+      expect(v).eql(expected)
+      ++expected
+    }
+    expect(expected).eql(5)
+  })
+
+  it('buffer halts when return() is called - when async satisfy required promises then stop', async () => {
+    const buffer = new EventBuffer()
+
+    const over = []
+    for (let i = 0; i !== 5; ++i)
+      over.push(buffer.shift())
+    buffer.return()
+
+    // populate in the future
+    for (let i = 0; i !== 15; ++i)
+      pause(500).then(() => buffer.push(i))
+
+    // drain
+    let expected = 0
+    for await (const v of buffer) {
+      ++expected
+    }
+    expect(buffer.available).eql(false)
+    expect(buffer.shift()).to.be.undefined
+    expect(expected).eql(0)
+
+    expect(await Promise.all(over)).eql([0,1,2,3,4])
+  })
 })
