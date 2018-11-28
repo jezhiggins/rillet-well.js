@@ -1,3 +1,5 @@
+const EventStream = require('./lib/event-stream')
+
 function oneEvent(evtSource, evtName) {
   let callback = null
   const p = new Promise(resolve => callback = resolve)
