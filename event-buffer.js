@@ -1,6 +1,7 @@
 class EventBuffer {
   constructor() {
     this.buffer = []
+    this.latch = null
   } // constructor
 
   get available() {
@@ -8,11 +9,18 @@ class EventBuffer {
   } // available
 
   push(val) {
+    if (this.latch)
+      return this.latch(val)
+
     this.buffer.push(val)
   } // push
 
   shift() {
-    return this.buffer.shift()
+    if (this.available)
+      return this.buffer.shift()
+
+    const p = new Promise(resolve => this.latch = resolve)
+    return p
   } // pop
 } // class EventBuffer
 
