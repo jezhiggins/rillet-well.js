@@ -39,6 +39,18 @@ describe('toArray', () => {
     expect(gather).to.eql(array)
   })
 
+  it('source(array) stopped', async () => {
+    let expected = 1
+    const rw = source(array_gn())
+    for await (const v of rw) {
+      expect(v).eql(expected)
+      ++expected
+      if (expected == 4)
+        rw.stop()
+    }
+    expect(expected).eql(4)
+  })
+
   it('source(slow_array) toArray(dest)', async () => {
     const gather = []
     source(slow_array_gn('Z')).toArray(gather)
