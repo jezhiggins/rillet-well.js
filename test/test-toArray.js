@@ -9,6 +9,11 @@ async function* array_gn() {
     yield i
 }
 
+async function* promise_array_gn() {
+  for (const i of array)
+    yield Promise.resolve(i)
+}
+
 async function* slow_array_gn() {
   for (const i of array) {
     await pause(100)
@@ -19,6 +24,12 @@ async function* slow_array_gn() {
 describe('toArray', () => {
   it('await source(array) toArray', async () => {
     const c = await source(array_gn()).toArray()
+
+    expect(c).to.eql(array)
+  })
+
+  it('await source(promise-array) toArray', async () => {
+    const c = await source(promise_array_gn()).toArray()
 
     expect(c).to.eql(array)
   })
