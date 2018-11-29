@@ -1,28 +1,6 @@
 const { fromEvent, fromEvents } = require('../rillet-well')
 const { expect } = require('chai')
-const { pause } = require('./helpers');
-
-class EventSource {
-  constructor() {
-    this.eventName = null;
-    this.eventSink = null;
-  }
-
-  on(name, callback) {
-    this.eventName = name;
-    this.eventSink = callback;
-  }
-
-  off(name, callback) {
-    expect(name).to.equal(this.eventName)
-    expect(callback).to.equal(this.eventSink)
-  }
-
-  evt(value) {
-    if (this.eventSink)
-      this.eventSink(value);
-  }
-} // EventSource
+const { pause, EventSource } = require('./helpers');
 
 describe('fromEvent', () => {
   it('fromEvent(s, n) toArray', async () => {

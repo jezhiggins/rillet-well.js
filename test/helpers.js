@@ -1,5 +1,6 @@
 const assert = require('assert');
 const { DateTime } = require('luxon')
+const { expect } = require('chai')
 
 function compareSequences(msg, src, expected) {
   const result = (src && src.toArray) ? src.toArray() : src;
@@ -30,8 +31,31 @@ function pause(p = 1) {
   return new Promise(resolve => setTimeout(resolve, p))
 } // pause
 
+class EventSource {
+  constructor() {
+    this.eventName = null;
+    this.eventSink = null;
+  }
+
+  on(name, callback) {
+    this.eventName = name;
+    this.eventSink = callback;
+  }
+
+  off(name, callback) {
+    expect(name).to.equal(this.eventName)
+    expect(callback).to.equal(this.eventSink)
+  }
+
+  evt(value) {
+    if (this.eventSink)
+      this.eventSink(value);
+  }
+} // EventSource
+
 module.exports = {
   compareSequences,
   timer,
-  pause
+  pause,
+  EventSource
 };
