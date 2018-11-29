@@ -28,6 +28,15 @@ function oneEvent(evtSource, evtName) {
   }
 } // oneEvent
 
+async function* take(async_iter, count) {
+  for await (const a of async_iter) {
+    if (count === 0)
+      break;
+    --count;
+    yield a;
+  } // for
+} // take
+
 ////////////////////
 class RilletWell {
   static source(async_iter) {
@@ -54,9 +63,13 @@ class RilletWell {
     this.async_iter.return();
   }
 
+  take(count) { return new RilletWell(take(this.async_iter, count)); }
+
   async toArray(dest = []) {
-    for await (const v of this)
+    for await (const v of this) {
       dest.push(v)
+      console.log('Boop')
+    }
     return dest
   } // toArray
 } // class RilletWell
